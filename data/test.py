@@ -32,7 +32,7 @@ class TestRevision(db.Model):
     pre_condition = db.Column(db.String(140), unique=False)  # type: str
     post_condition = db.Column(db.String(140), unique=False)  # type: str
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
-    test = db.relationship('Test', backref="revisions")
+    test = db.relationship('Test')
     # parameters = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime
@@ -40,8 +40,12 @@ class TestRevision(db.Model):
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    #revisions = db.relationship('TestRevision', uselist=True, lazy="dynamic")
-    #last_revision = TestRevision.query.filter_by(test_id=id).order_by(TestRevision.id).limit(1).first()
+
+    @property
+    def last_revision(self):
+        return TestRevision.query.filter_by(test_id=self.id).order_by(TestRevision.id).limit(1).first()
+    # revisions = db.relationship('TestRevision', uselist=True, lazy="dynamic")
+    # last_revision = TestRevision.query.filter_by(test_id=id).order_by(TestRevision.id).limit(1).first()
     # tags = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime

@@ -32,4 +32,5 @@ db.app = app
 
 t = test.Test.query.one()
 print("Test got")
-print(t.revisions)
+print(t.last_revision)
+
