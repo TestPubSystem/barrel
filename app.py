@@ -25,10 +25,11 @@ db.app = app
 # r2 = test.TestRevision()
 # r2.test = t
 #
-# db.session.add(r)
 # db.session.add(r2)
+# db.session.add(r)
+# db.session.add(t)
+# db.session.commit()
 
-t = test.Test.query.get(1)
+t = test.Test.query.one()
 print("Test got")
 print(t.revisions)
-db.session.commit()
