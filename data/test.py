@@ -16,13 +16,21 @@ class Step(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.Enum(StepType))
     text = db.Column(db.String(140), unique=False)
-    attachments = None  # type: list
     order_number = db.Column(db.Integer)
     test_revision_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
     test_revision = db.relationship('TestRevision', backref=db.backref('steps', lazy='dynamic'))
+    # attachments = None  # type: list
 
     def __init__(self, text):
         self.text = text
+
+    def to_map(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "text": self.text,
+            "order_number": self.order_number
+        }
 
 
 class TestRevision(db.Model):
@@ -37,6 +45,15 @@ class TestRevision(db.Model):
     # author_id = None
     # creation_date = None  # type: datetime.datetime
 
+    def to_map(self):
+        return {
+            "id": self.id,
+            "title": self.title,
+            "desc": self.desc,
+            "pre_condition": self.pre_condition,
+            "post_condition": self.post_condition
+        }
+
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +66,12 @@ class Test(db.Model):
     # tags = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime
+
+    def to_map(self):
+        return {
+            "id": self.id,
+            "last_revision": self.last_revision.to_map() if self.last_revision else None
+        }
 
 
 class TestSuite(db.Model):
