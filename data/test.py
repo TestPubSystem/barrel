@@ -29,7 +29,7 @@ class Step(db.Model):
             "id": self.id,
             "type": self.type,
             "text": self.text,
-            "order_number": self.order_number
+            "order_number": self.order_number,
         }
 
 
@@ -51,7 +51,8 @@ class TestRevision(db.Model):
             "title": self.title,
             "desc": self.desc,
             "pre_condition": self.pre_condition,
-            "post_condition": self.post_condition
+            "post_condition": self.post_condition,
+            "steps": [x.to_map() for x in self.steps] if self.steps else None,
         }
 
 
