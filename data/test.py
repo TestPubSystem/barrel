@@ -19,9 +19,10 @@ class Step(db.Model):
     order_number = db.Column(db.Integer)
     test_revision_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
     test_revision = db.relationship('TestRevision', backref=db.backref('steps', lazy='dynamic'))
+
     # attachments = None  # type: list
 
-    def __init__(self, text):
+    def __init__(self, text=None):
         self.text = text
 
     def to_map(self):
@@ -32,6 +33,17 @@ class Step(db.Model):
             "order_number": self.order_number,
         }
 
+    @classmethod
+    def from_map(cls, x):
+        self = Step()
+        self.update_from_map(x)
+        return self
+
+    def update_from_map(self, x):
+        self.type = x.get("type")
+        self.text = x.get("text")
+        self.order_number = x.get("order_number")
+
 
 class TestRevision(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,8 +51,9 @@ class TestRevision(db.Model):
     desc = db.Column(db.String(140), unique=False)  # type: str
     pre_condition = db.Column(db.String(140), unique=False)  # type: str
     post_condition = db.Column(db.String(140), unique=False)  # type: str
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id'), )
     test = db.relationship('Test')
+
     # parameters = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime
@@ -55,13 +68,29 @@ class TestRevision(db.Model):
             "steps": [x.to_map() for x in self.steps] if self.steps else None,
         }
 
+    @classmethod
+    def from_map(cls, x):
+        self = TestRevision()
+        self.update_from_map(x)
+        return self
+
+    def update_from_map(self, x):
+        self.test_id = x.get("test_id")
+        self.title = x.get("title")
+        self.desc = x.get("desc")
+        self.pre_condition = x.get("pre_condition")
+        self.post_condition = x.get("post_condition")
+        steps = x.get("steps") or []
+        #self.steps = [Step.from_map(y) for y in steps]
+
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     @property
     def last_revision(self):
-        return TestRevision.query.filter_by(test_id=self.id).order_by(TestRevision.id).limit(1).first()
+        return TestRevision.query.filter_by(test_id=self.id).order_by(TestRevision.id.desc()).limit(1).first()
+
     # revisions = db.relationship('TestRevision', uselist=True, lazy="dynamic")
     # last_revision = TestRevision.query.filter_by(test_id=id).order_by(TestRevision.id).limit(1).first()
     # tags = None  # type: list[str]
@@ -75,9 +104,12 @@ class Test(db.Model):
         }
 
 
+test_suite_tests = db.Table()
+
+
 class TestSuite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    title = None  # type: str
+    title = db.Column(db.String(140), unique=False)
     tests = None  # type: list[Test]
     tags = None  # type: list[str]
     author_id = None
