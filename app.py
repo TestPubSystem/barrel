@@ -43,27 +43,44 @@ def get_tests(offset=0, limit=20):
 
 @app.route("/api/v1/tests/<int:test_id>")
 def get_test(test_id):
-    res = test.Test.query.get(test_id)
-    print(res)
-    return jsonify(data=res.to_map())
+    t = test.Test.query.get(test_id)
+    if not t:
+        return jsonify(error="No test found"), 404
+    return jsonify(data=t.to_map())
 
 
 @app.route("/api/v1/tests/<int:test_id>/revisions/")
 def get_test_revisions(test_id):
-    res = test.TestRevision.query.filter_by(test_id=test_id).all()
-    return jsonify(data=[x.to_map() for x in res])
+    t = test.Test.query.get(test_id)
+    if not t:
+        return jsonify(error="No test found"), 404
+    return jsonify(data=[x.to_map() for x in t.revisions])
 
 
 @app.route("/api/v1/tests/<int:test_id>/revisions/<int:revision_id>", methods=["GET"])
+def get_test_revision_by_test(revision_id, test_id):
+    t = test.Test.query.get(test_id)
+    if not t:
+        return jsonify(error="No test found"), 404
+    res = test.TestRevision.query.get(revision_id)
+    if not res:
+        return jsonify(error="No revision found"), 404
+    return jsonify(data=res.to_map())
+
+
 @app.route("/api/v1/revisions/<int:revision_id>", methods=["GET"])
-def get_test_revision(revision_id, test_id=None):
-    res = test.TestRevision.get(revision_id)
+def get_test_revision(revision_id):
+    res = test.TestRevision.query.get(revision_id)
+    if not res:
+        return jsonify(error="No revision found"), 404
     return jsonify(data=res.to_map())
 
 
 @app.route("/api/v1/tests/<int:test_id>", methods=["PUT"])
 def update_test(test_id):
     t = test.Test.query.get(test_id)
+    if not t:
+        return jsonify(error="No test found"), 404
     data = request.get_json(force=True)
     rev = test.TestRevision.from_map(data)
     rev.test = t
@@ -74,7 +91,10 @@ def update_test(test_id):
 
 @app.route("/api/v1/tests/<int:test_id>", methods=["DELETE"])
 def delete_test(test_id):
-    test.Test.query.filter(test.Test.id == test_id).delete()
+    t = test.Test.query.get(test_id)
+    if not t:
+        return jsonify(error="No test found"), 404
+    db.session.delete(t)
     db.session.commit()
     return jsonify()
 

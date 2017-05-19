@@ -18,7 +18,6 @@ class Step(db.Model):
     text = db.Column(db.String(140), unique=False)
     order_number = db.Column(db.Integer)
     test_revision_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
-    test_revision = db.relationship('TestRevision', backref=db.backref('steps', lazy='dynamic'))
 
     # attachments = None  # type: list
 
@@ -51,8 +50,15 @@ class TestRevision(db.Model):
     desc = db.Column(db.String(140), unique=False)  # type: str
     pre_condition = db.Column(db.String(140), unique=False)  # type: str
     post_condition = db.Column(db.String(140), unique=False)  # type: str
-    test_id = db.Column(db.Integer, db.ForeignKey('test.id'), )
-    test = db.relationship('Test')
+    test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
+
+    steps = db.relationship(
+        'Step',
+        cascade="all"
+    )
+
+    def __init__(self):
+        self.steps = []
 
     # parameters = None  # type: list[str]
     # author_id = None
@@ -80,8 +86,9 @@ class TestRevision(db.Model):
         self.desc = x.get("desc")
         self.pre_condition = x.get("pre_condition")
         self.post_condition = x.get("post_condition")
-        steps = x.get("steps") or []
-        #self.steps = [Step.from_map(y) for y in steps]
+        steps = x.get("steps")
+        if steps:
+            self.steps.extend([Step.from_map(y) for y in steps])
 
 
 class Test(db.Model):
@@ -91,16 +98,21 @@ class Test(db.Model):
     def last_revision(self):
         return TestRevision.query.filter_by(test_id=self.id).order_by(TestRevision.id.desc()).limit(1).first()
 
-    # revisions = db.relationship('TestRevision', uselist=True, lazy="dynamic")
-    # last_revision = TestRevision.query.filter_by(test_id=id).order_by(TestRevision.id).limit(1).first()
+    revisions = db.relationship(
+        'TestRevision',
+        backref=db.backref('test'),
+        cascade="all",
+        lazy = 'dynamic',
+    )
     # tags = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime
 
     def to_map(self):
+        last_revision = self.last_revision
         return {
             "id": self.id,
-            "last_revision": self.last_revision.to_map() if self.last_revision else None
+            "last_revision": last_revision.to_map() if last_revision else None
         }
 
 
