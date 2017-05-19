@@ -102,8 +102,9 @@ class Test(db.Model):
         'TestRevision',
         backref=db.backref('test'),
         cascade="all",
-        lazy = 'dynamic',
+        lazy='dynamic',
     )
+
     # tags = None  # type: list[str]
     # author_id = None
     # creation_date = None  # type: datetime.datetime
