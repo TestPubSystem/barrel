@@ -9,7 +9,7 @@ from db_json_encoder import CustomJSONEncoder
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_ECHO'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.json_encoder = CustomJSONEncoder
 db.init_app(app)
 db.app = app
