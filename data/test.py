@@ -51,6 +51,7 @@ class TestRevision(db.Model):
     pre_condition = db.Column(db.String(140), unique=False)  # type: str
     post_condition = db.Column(db.String(140), unique=False)  # type: str
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
+    creation_date = db.Column(db.DateTime, default=db.func.now())
 
     steps = db.relationship(
         'Step',
@@ -71,6 +72,7 @@ class TestRevision(db.Model):
             "desc": self.desc,
             "pre_condition": self.pre_condition,
             "post_condition": self.post_condition,
+            "creation_date": self.creation_date,
             "steps": [x.to_map() for x in self.steps] if self.steps else None,
         }
 
@@ -93,6 +95,7 @@ class TestRevision(db.Model):
 
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    creation_date = db.Column(db.DateTime, default=db.func.now())
 
     @property
     def last_revision(self):
@@ -107,12 +110,12 @@ class Test(db.Model):
 
     # tags = None  # type: list[str]
     # author_id = None
-    # creation_date = None  # type: datetime.datetime
 
     def to_map(self):
         last_revision = self.last_revision
         return {
             "id": self.id,
+            "creation_date": self.creation_date,
             "last_revision": last_revision.to_map() if last_revision else None
         }
 

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from flask.json import JSONEncoder
-from data import db
 import enum
+import datetime
+
+from data import db
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -12,6 +14,8 @@ class CustomJSONEncoder(JSONEncoder):
                 return obj.to_map()
             elif isinstance(obj, enum.Enum):
                 return obj.value
+            elif isinstance(obj, datetime.datetime):
+                return obj.isoformat()
             iterable = iter(obj)
         except TypeError:
             pass
