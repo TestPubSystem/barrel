@@ -21,7 +21,7 @@ db.create_all(app=app)
 def get_tests(offset=0, limit=20):
     res = test.Test.query.offset(offset).limit(limit).all()
     print(res)
-    return jsonify(data=[x.to_map() for x in res])
+    return jsonify(data=res)
 
 
 @app.route("/api/v1/tests/<int:test_id>")
@@ -29,7 +29,7 @@ def get_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
         return jsonify(error="No test found"), 404
-    return jsonify(data=t.to_map())
+    return jsonify(data=t)
 
 
 @app.route("/api/v1/tests/<int:test_id>/revisions/")
@@ -37,7 +37,7 @@ def get_test_revisions(test_id):
     t = test.Test.query.get(test_id)
     if not t:
         return jsonify(error="No test found"), 404
-    return jsonify(data=[x.to_map() for x in t.revisions])
+    return jsonify(data=t.revisions)
 
 
 @app.route("/api/v1/tests/<int:test_id>/revisions/<int:revision_id>", methods=["GET"])
@@ -48,7 +48,7 @@ def get_test_revision_by_test(revision_id, test_id):
     res = test.TestRevision.query.get(revision_id)
     if not res:
         return jsonify(error="No revision found"), 404
-    return jsonify(data=res.to_map())
+    return jsonify(data=res)
 
 
 @app.route("/api/v1/revisions/<int:revision_id>", methods=["GET"])
@@ -56,7 +56,7 @@ def get_test_revision(revision_id):
     res = test.TestRevision.query.get(revision_id)
     if not res:
         return jsonify(error="No revision found"), 404
-    return jsonify(data=res.to_map())
+    return jsonify(data=res)
 
 
 @app.route("/api/v1/tests/<int:test_id>", methods=["PUT"])
@@ -69,7 +69,7 @@ def update_test(test_id):
     rev.test = t
     db.session.add(rev)
     db.session.commit()
-    return jsonify(data=t.to_map())
+    return jsonify(data=t)
 
 
 @app.route("/api/v1/tests/<int:test_id>", methods=["DELETE"])
@@ -91,7 +91,7 @@ def create_test():
     db.session.add(rev)
     db.session.add(t)
     db.session.commit()
-    return jsonify(data=t.to_map()), 201
+    return jsonify(data=t), 201
 
 
 app.run()

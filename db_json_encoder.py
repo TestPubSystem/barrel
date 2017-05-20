@@ -9,7 +9,7 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:
             if isinstance(obj, db.Model):
-                return obj.to_dict()
+                return obj.to_map()
             elif isinstance(obj, enum.Enum):
                 return obj.value
             iterable = iter(obj)
