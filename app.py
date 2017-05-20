@@ -93,5 +93,5 @@ def create_test():
     db.session.commit()
     return jsonify(data=t), 201
 
-
-app.run()
+if __name__=="__main__":
+    app.run()
