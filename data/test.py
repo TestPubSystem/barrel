@@ -73,7 +73,7 @@ class TestRevision(db.Model):
             "pre_condition": self.pre_condition,
             "post_condition": self.post_condition,
             "creation_date": self.creation_date,
-            "steps": [x.to_map() for x in self.steps] if self.steps else None,
+            "steps": self.steps,
         }
 
     @classmethod
@@ -112,21 +112,47 @@ class Test(db.Model):
     # author_id = None
 
     def to_map(self):
-        last_revision = self.last_revision
         return {
             "id": self.id,
             "creation_date": self.creation_date,
-            "last_revision": last_revision.to_map() if last_revision else None
+            "last_revision": self.last_revision,
         }
 
 
-test_suite_tests = db.Table()
+test_suite_tests = db.Table(
+    "test_suite_tests",
+    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
+    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
+)
 
 
 class TestSuite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140), unique=False)
-    tests = None  # type: list[Test]
-    tags = None  # type: list[str]
-    author_id = None
-    creation_date = None  # type: datetime.datetime
+    creation_date = db.Column(db.DateTime, default=db.func.now())
+    tests = db.relationship(
+        'Test',
+        secondary=test_suite_tests,
+        backref=db.backref('test_suite', lazy='dynamic'),
+        cascade="all"
+    )
+
+    def to_map(self):
+        return {
+            "id": self.id,
+            "creation_date": self.creation_date,
+            "title": self.title,
+            "tests": self.tests
+        }
+
+    @classmethod
+    def from_map(cls, x):
+        self = TestSuite()
+        self.update_from_map(x)
+        return self
+
+    def update_from_map(self, x):
+        self.title = x.get("title")
+
+    # tags = None  # type: list[str]
+    # author_id = None
