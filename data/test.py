@@ -46,9 +46,9 @@ class Step(db.Model):
         return self
 
     def update_from_map(self, x):
-        self.type = x.get("type")
-        self.text = x.get("text")
-        self.order_number = x.get("order_number")
+        self.type = x.get("type", self.type)
+        self.text = x.get("text", self.text)
+        self.order_number = x.get("order_number", self.order_number)
 
 
 class TestRevision(db.Model):
@@ -90,12 +90,14 @@ class TestRevision(db.Model):
         return self
 
     def update_from_map(self, x):
-        self.test_id = x.get("test_id")
-        self.title = x.get("title")
-        self.desc = x.get("desc")
-        self.pre_condition = x.get("pre_condition")
-        self.post_condition = x.get("post_condition")
-        steps = x.get("steps")
+        self.test_id = x.get("test_id", self.test_id)
+        self.title = x.get("title", self.title)
+        self.desc = x.get("desc", self.desc)
+        self.pre_condition = x.get("pre_condition", self.pre_condition)
+        self.post_condition = x.get("post_condition", self.post_condition)
+        steps = x.get("steps", [])
+        if steps is None:
+            self.steps.clear()
         if steps:
             self.steps.extend([Step.from_map(y) for y in steps])
 

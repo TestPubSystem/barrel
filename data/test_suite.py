@@ -51,7 +51,7 @@ class TestSuite(db.Model):
         return self
 
     def update_from_map(self, x):
-        self.title = x.get("title")
-        self.desc = x.get("desc")
+        self.title = x.get("title", self.title)
+        self.desc = x.get("desc", self.desc)
 
         # author_id = None
