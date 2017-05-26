@@ -3,7 +3,7 @@
 
 from flask import Flask
 from data import db
-from data import test
+from data import test, test_suite
 from flask import jsonify, request
 from db_json_encoder import CustomJSONEncoder
 
@@ -95,20 +95,20 @@ def create_test():
 
 @app.route("/api/v1/testsuites/", methods=["GET"])
 def get_test_suites(offset=0, limit=20):
-    res = test.TestSuite.query.offset(offset).limit(limit).all()
+    res = test_suite.TestSuite.query.offset(offset).limit(limit).all()
     return jsonify(data=res)
 
 
 @app.route("/api/v1/testsuites/<int:test_suite_id>", methods=["GET"])
 def get_test_suite(test_suite_id):
-    res = test.TestSuite.query.get(test_suite_id)
+    res = test_suite.TestSuite.query.get(test_suite_id)
     return jsonify(data=res)
 
 
 @app.route("/api/v1/testsuites/", methods=["POST"])
 def create_test_suite():
     data = request.get_json(force=True)
-    res = test.TestSuite.from_map(data)
+    res = test_suite.TestSuite.from_map(data)
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)
@@ -116,7 +116,7 @@ def create_test_suite():
 
 @app.route("/api/v1/testsuites/<int:test_suite_id>/tests/<int:test_id>/", methods=["POST"])
 def add_test_suite_test(test_suite_id, test_id):
-    res = test.TestSuite.query.get(test_suite_id)
+    res = test_suite.TestSuite.query.get(test_suite_id)
     t = test.Test.query.get(test_id)
     res.tests.append(t)
     db.session.add(res)

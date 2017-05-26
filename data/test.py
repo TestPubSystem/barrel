@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
 import enum
 from data import db
+from data.tag import Tag
+from werkzeug.utils import cached_property
+
+test_tags = db.Table(
+    "test_tags",
+    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
+    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id'))
+)
 
 
 @enum.unique
@@ -97,7 +104,7 @@ class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     creation_date = db.Column(db.DateTime, default=db.func.now())
 
-    @property
+    @cached_property
     def last_revision(self):
         return TestRevision.query.filter_by(test_id=self.id).order_by(TestRevision.id.desc()).limit(1).first()
 
@@ -106,6 +113,11 @@ class Test(db.Model):
         backref=db.backref('test'),
         cascade="all",
         lazy='dynamic',
+    )
+    tags = db.relationship(
+        'Tag',
+        secondary=test_tags,
+        cascade="all"
     )
 
     # tags = None  # type: list[str]
@@ -116,43 +128,5 @@ class Test(db.Model):
             "id": self.id,
             "creation_date": self.creation_date,
             "last_revision": self.last_revision,
+            "tags": self.tags,
         }
-
-
-test_suite_tests = db.Table(
-    "test_suite_tests",
-    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
-    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
-)
-
-
-class TestSuite(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(140), unique=False)
-    creation_date = db.Column(db.DateTime, default=db.func.now())
-    tests = db.relationship(
-        'Test',
-        secondary=test_suite_tests,
-        backref=db.backref('test_suite', lazy='dynamic'),
-        cascade="all"
-    )
-
-    def to_map(self):
-        return {
-            "id": self.id,
-            "creation_date": self.creation_date,
-            "title": self.title,
-            "tests": self.tests
-        }
-
-    @classmethod
-    def from_map(cls, x):
-        self = TestSuite()
-        self.update_from_map(x)
-        return self
-
-    def update_from_map(self, x):
-        self.title = x.get("title")
-
-    # tags = None  # type: list[str]
-    # author_id = None
