@@ -14,8 +14,6 @@ test_suite_blueprint = Blueprint("testsuites", __name__)
 @test_suite_blueprint.route("/", methods=["GET"])
 def get_test_suites(offset=0, limit=20):
     res = test_suite.TestSuite.query.offset(offset).limit(limit).all()
-    if not res:
-        return jsonify(error="No testsuite found"), 404
     return jsonify(data=res)
 
 
@@ -82,3 +80,4 @@ def delete_test_suite_test(test_suite_id, test_id):
     res.tests.remove(t)
     db.session.commit()
     return jsonify(data=res)
+    
