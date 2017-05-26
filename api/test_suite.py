@@ -5,7 +5,7 @@ from flask import Blueprint
 from flask import request
 from flask import jsonify
 
-from data import test, test_suite
+from data import test, test_suite, tag
 from data import db
 
 test_suite_blueprint = Blueprint("testsuites", __name__)
@@ -80,4 +80,30 @@ def delete_test_suite_test(test_suite_id, test_id):
     res.tests.remove(t)
     db.session.commit()
     return jsonify(data=res)
-    
+
+
+
+
+@test_suite_blueprint.route("/<int:test_suite_id>/tags/<tag_name>", methods=["POST"])
+def add_tag(test_suite_id, tag_name):
+    t = test_suite.TestSuite.query.get(test_suite_id)
+    if not t:
+        return jsonify(error="No test found"), 404
+    tg = tag.Tag.query.filter_by(title=tag_name).one_or_none()
+    if not tg:
+        return jsonify(error="No tagsuite found"), 404
+    t.tags.append(tg)
+    db.session.commit()
+    return jsonify(data=t)
+
+@test_suite_blueprint.route("/<int:test_suite_id>/tags/<tag_name>", methods=["DELETE"])
+def delete_tag(test_suite_id, tag_name):
+    t = test_suite.TestSuite.query.get(test_suite_id)
+    if not t:
+        return jsonify(error="No testsuite found"), 404
+    tg = tag.Tag.query.filter_by(title=tag_name).one_or_none()
+    if not tg:
+        return jsonify(error="No tag found"), 404
+    t.tags.remove(tg)
+    db.session.commit()
+    return jsonify(data=t)

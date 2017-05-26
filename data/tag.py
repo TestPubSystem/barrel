@@ -24,5 +24,3 @@ class Tag(db.Model):
     def update_from_map(self, data):
         self.color = data.get("color", self.color)
         self.title = data.get("title", self.title)
-
-
