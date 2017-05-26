@@ -1,0 +1,18 @@
+{
+    "desc": "It is Test Descrition...", 
+    "post_condition": "Pre condition", 
+    "pre_condition": "Post condition", 
+    "steps": [
+      {
+        "order_number": 2, 
+        "text": "Step 0, but number 2", 
+        "type": "step"
+      }, 
+      {
+        "order_number": 1, 
+        "text": "Step 1", 
+        "type": "expected_result"
+      }
+    ], 
+    "title": "Test Title Edited"
+}
