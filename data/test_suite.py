@@ -20,6 +20,7 @@ test_suite_tests = db.Table(
 class TestSuite(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140), unique=False)
+    desc = db.Column(db.String(140), unique=False)
     creation_date = db.Column(db.DateTime, default=db.func.now())
     tests = db.relationship(
         'Test',
@@ -40,6 +41,7 @@ class TestSuite(db.Model):
             "title": self.title,
             "tests": self.tests,
             "tags": self.tags,
+            "desc": self.desc,
         }
 
     @classmethod
@@ -50,5 +52,6 @@ class TestSuite(db.Model):
 
     def update_from_map(self, x):
         self.title = x.get("title")
+        self.desc = x.get("desc")
 
-    # author_id = None
+        # author_id = None
