@@ -119,7 +119,8 @@ class Test(db.Model):
     tags = db.relationship(
         'Tag',
         secondary=test_tags,
-        cascade="all"
+        cascade="all",
+        backref=db.backref('tests', lazy='dynamic'),
     )
 
     # tags = None  # type: list[str]

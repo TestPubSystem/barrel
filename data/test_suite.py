@@ -25,12 +25,13 @@ class TestSuite(db.Model):
     tests = db.relationship(
         'Test',
         secondary=test_suite_tests,
-        backref=db.backref('suites', lazy='dynamic'),
+        backref=db.backref('test_suites', lazy='dynamic'),
         cascade="all"
     )
     tags = db.relationship(
         'Tag',
         secondary=test_suite_tags,
+        backref=db.backref('test_suites', lazy='dynamic'),
         cascade="all"
     )
 

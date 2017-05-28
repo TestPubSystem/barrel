@@ -54,3 +54,19 @@ def update_tag(tag_name):
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)
+
+
+@tag_blueprint.route("/<tag_name>/testsuites", methods=["GET"])
+def get_tag_test_suites(tag_name):
+    res = tag.Tag.query.filter_by(title=tag_name).one_or_none()
+    if not res:
+        return jsonify(error="No tag found"), 404
+    return jsonify(data=res.test_suites)
+
+
+@tag_blueprint.route("/<tag_name>/tests", methods=["GET"])
+def get_tag_tests(tag_name):
+    res = tag.Tag.query.filter_by(title=tag_name).one_or_none()
+    if not res:
+        return jsonify(error="No tag found"), 404
+    return jsonify(data=res.tests)
