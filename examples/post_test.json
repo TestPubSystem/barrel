@@ -1,7 +1,7 @@
 {
     "desc": "It is Test Descrition...", 
-    "post_condition": "Pre condition", 
-    "pre_condition": "Post condition", 
+    "post_condition": "Post condition", 
+    "pre_condition": "Pre condition", 
     "steps": [
       {
         "order_number": 2, 
