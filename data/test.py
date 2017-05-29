@@ -75,6 +75,7 @@ class TestRevision(db.Model):
     def to_map(self):
         return {
             "id": self.id,
+            "test_id": self.test_id,
             "title": self.title,
             "desc": self.desc,
             "pre_condition": self.pre_condition,
@@ -82,12 +83,6 @@ class TestRevision(db.Model):
             "creation_date": self.creation_date,
             "steps": self.steps,
         }
-
-    @classmethod
-    def from_map(cls, x):
-        self = TestRevision()
-        self.update_from_map(x)
-        return self
 
     def update_from_map(self, x):
         self.test_id = x.get("test_id", self.test_id)
@@ -99,7 +94,10 @@ class TestRevision(db.Model):
         if steps is None:
             self.steps.clear()
         if steps:
-            self.steps.extend([Step.from_map(y) for y in steps])
+            for s in steps:
+                step = Step()
+                step.update_from_map(s)
+                self.steps.append(step)
 
 
 class Test(db.Model):

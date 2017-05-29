@@ -45,12 +45,6 @@ class TestSuite(db.Model):
             "desc": self.desc,
         }
 
-    @classmethod
-    def from_map(cls, x):
-        self = TestSuite()
-        self.update_from_map(x)
-        return self
-
     def update_from_map(self, x):
         self.title = x.get("title", self.title)
         self.desc = x.get("desc", self.desc)

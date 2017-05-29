@@ -1,18 +1,20 @@
 {
-    "desc": "It is Test Descrition...", 
-    "post_condition": "Post condition Edited", 
-    "pre_condition": "Pre condition Edited", 
+  "last_revision": {
+    "desc": "It is Test Descrition...",
+    "post_condition": "Post condition Edited",
+    "pre_condition": "Pre condition Edited",
     "steps": [
       {
-        "order_number": 2, 
-        "text": "Step with number 2", 
+        "order_number": 2,
+        "text": "Step with number 2",
         "type": "step"
-      }, 
+      },
       {
-        "order_number": 1, 
-        "text": "Step 1", 
+        "order_number": 1,
+        "text": "Step 1",
         "type": "expected_result"
       }
-    ], 
+    ],
     "title": "Test Title Edited"
+  }
 }

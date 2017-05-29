@@ -15,12 +15,6 @@ class Tag(db.Model):
             "color": self.color,
         }
 
-    @classmethod
-    def from_map(cls, data):
-        t = Tag()
-        t.update_from_map(data)
-        return t
-
     def update_from_map(self, data):
         self.color = data.get("color", self.color)
         self.title = data.get("title", self.title)

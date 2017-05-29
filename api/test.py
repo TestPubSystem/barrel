@@ -44,13 +44,14 @@ def get_test_revision_by_test(revision_id, test_id):
     return jsonify(data=res)
 
 
-@test_blueprint.route("/<int:test_id>/revisions", methods=["POST"])
+@test_blueprint.route("/<int:test_id>/revisions/", methods=["POST"])
 def update_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
         return jsonify(error="No test found"), 404
     data = request.get_json(force=True)
-    rev = test.TestRevision.from_map(data)
+    rev = test.TestRevision()
+    rev.update_from_map(data)
     rev.test = t
     db.session.add(rev)
     db.session.commit()
@@ -70,7 +71,8 @@ def delete_test(test_id):
 @test_blueprint.route("/", methods=["POST"])
 def create_test():
     data = request.get_json(force=True)
-    rev = test.TestRevision.from_map(data["last_revision"])
+    rev = test.TestRevision()
+    rev.update_from_map(data["last_revision"])
     t = test.Test()
     rev.test = t
     db.session.add(rev)
@@ -90,6 +92,7 @@ def add_tag(test_id, tag_name):
     t.tags.append(tg)
     db.session.commit()
     return jsonify(data=t)
+
 
 @test_blueprint.route("/<int:test_id>/tags/<tag_name>", methods=["DELETE"])
 def delete_tag(test_id, tag_name):
