@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
 import enum
-from werkzeug.utils import cached_property
 
 from data.test import TestRevision, Step
 from data.test_suite import TestSuite

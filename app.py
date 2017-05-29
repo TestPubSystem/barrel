@@ -7,7 +7,7 @@ from api.test import test_blueprint
 from api.test_suite import test_suite_blueprint
 from api.tag import tag_blueprint
 from db_json_encoder import CustomJSONEncoder
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 DEBUG = True  # FIXME remove in production
 

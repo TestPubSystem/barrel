@@ -73,7 +73,6 @@ def add_test_suite_test(test_suite_id, test_id):
 @test_suite_blueprint.route("/<int:test_suite_id>/tests/<int:test_id>", methods=["DELETE"])
 def delete_test_suite_test(test_suite_id, test_id):
     res = test_suite.TestSuite.query.get(test_suite_id)
-    t = test.Test.query.get(test_id)
     if not res:
         return jsonify(error="No testsuite found"), 404
     t = test.Test.query.get(test_id)
