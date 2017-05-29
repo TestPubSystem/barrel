@@ -3,6 +3,11 @@
 
 import datetime
 import enum
+from werkzeug.utils import cached_property
+
+from data.test import TestRevision, Step
+from data.test_suite import TestSuite
+from data import db
 
 
 @enum.unique
@@ -11,35 +16,38 @@ class Status(enum.Enum):
     partial = "partial"
     failed = "failed"
     blocked = "blocked"
-    none = None
 
 
-class StepResult:
-    step_id = None
-    id = None
-    date = None  # type: datetime.datetime
-    status = None  # type: Status
-    step = None  # type: test.Step
-    comment = None  # type: str
-    attachments = None
+class StepResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.Enum(Status))
+    step_id = db.Column(db.Integer, db.ForeignKey('step.id'))
+    step = db.relationship(
+        'Step'
+    )
+    completion_date = db.Column(db.DateTime, default=db.func.now())
+    comment = db.Column(db.String(140), unique=False)
+    # attachments = None
 
 
 class TestResult:
-    id = None
-    revision_id = None
-    step_statuses = None  # type: StepResult
-    status = None  # type: Status
-    comment = None  # type: str
-    attachments = None
-    author_id = None
-    finish_date = None  # type: datetime.datetime
+    id = db.Column(db.Integer, primary_key=True)
+    status = db.Column(db.Enum(Status))
+    test_revision_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
+    step_statuses = db.relationship("StepResult", cascade="all")
+    test_revision = db.relationship("TestRevision", lazy="dynamic")
+    suite_run_id = db.Column(db.Integer, db.ForeignKey("suite_run.id"), nullable=True)
+    comment = db.Column(db.String(140), unique=False)
+    finish_date = db.Column(db.DateTime)
+    # attachments = None
+    # author_id = None
 
 
 class SuiteRun:
-    id = None
-    suite_id = None
-    tests = None  # type: list[test.Test]
-    results = None  # type: list[TestResult]
-    author_id = None
-    start_date = None  # type: datetime.datetime
-    finish_date = None  # type: datetime.datetime
+    id = db.Column(db.Integer, primary_key=True)
+    test_suite_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
+    start_date = db.Column(db.DateTime, default=db.func.now())
+    finish_date = db.Column(db.DateTime)
+    test_results = db.relationship("TestResult", cascade="all")
+    # results = None  # type: list[TestResult]
+    # author_id = None
