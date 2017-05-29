@@ -44,7 +44,7 @@ def get_test_revision_by_test(revision_id, test_id):
     return jsonify(data=res)
 
 
-@test_blueprint.route("/<int:test_id>", methods=["PUT"])
+@test_blueprint.route("/<int:test_id>/revisions", methods=["POST"])
 def update_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -70,7 +70,7 @@ def delete_test(test_id):
 @test_blueprint.route("/", methods=["POST"])
 def create_test():
     data = request.get_json(force=True)
-    rev = test.TestRevision.from_map(data)
+    rev = test.TestRevision.from_map(data["last_revision"])
     t = test.Test()
     rev.test = t
     db.session.add(rev)
