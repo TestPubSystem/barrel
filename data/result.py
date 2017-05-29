@@ -27,7 +27,23 @@ class StepResult(db.Model):
     )
     completion_date = db.Column(db.DateTime, default=db.func.now())
     comment = db.Column(db.String(140), unique=False)
-    # attachments = None
+
+    def to_map(self):
+        return {
+            "id": self.id,
+            "status": self.status,
+            "step_id": self.step_id,
+            "step": self.step,
+            "completion_date": self.completion_date,
+            "comment": self.comment
+        }
+
+    def update_from_map(self, data):
+        self.status = data.get("status", self.status)
+        self.step_id = data.get("step_id", self.step_id)
+        self.completion_date = data.get("completion_date", self.completion_date)
+        self.comment = data.get("comment", self.comment)
+        # attachments = None
 
 
 class TestResult:
