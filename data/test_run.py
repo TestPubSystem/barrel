@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from data import db
 from data.result import Status, StepResult
-from data.test import TestRevision
+from data.test import TestRevision, Test
 
 
 class TestRun(db.Model):
@@ -30,11 +30,15 @@ class TestRun(db.Model):
         }
 
 
-def create_from_test(test):
+def create_from_test_revision(revision: TestRevision):
     run = TestRun()
-    run.test_revision = test.last_revision
-    for step in test.last_revision.steps:
+    run.test_revision = revision
+    for step in revision.steps:
         res = StepResult()
         res.step = step
         run.step_results.append(res)
     return run
+
+
+def create_from_test(test: Test):
+    return create_from_test_revision(test.last_revision)
