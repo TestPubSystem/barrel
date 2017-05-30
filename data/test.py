@@ -39,12 +39,6 @@ class Step(db.Model):
             "order_number": self.order_number,
         }
 
-    @classmethod
-    def from_map(cls, x):
-        self = Step()
-        self.update_from_map(x)
-        return self
-
     def update_from_map(self, x):
         self.type = x.get("type", self.type)
         self.text = x.get("text", self.text)
