@@ -22,11 +22,17 @@ def get_suite_runs():
     return jsonify(data=runs)
 
 
+@suite_run_blueprint.route("/<int:run_id>")
+def get_suite_run(run_id):
+    runs = suite_run.SuiteRun.query.get(run_id)
+    return jsonify(data=runs)
+
+
 @suite_run_blueprint.route("/", methods=["POST"])
 def create_suite_run():
     data = request.get_json(force=True)
     suite = test_suite.TestSuite.query.get(data["test_suite_id"])
     run = suite_run.create_from_test_suite(suite)
     db.session.add(run)
-    db.session.commit() 
+    db.session.commit()
     return jsonify(data=run)
