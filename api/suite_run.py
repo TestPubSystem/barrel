@@ -16,14 +16,17 @@ from data import test_suite
 suite_run_blueprint = Blueprint("suite_run", __name__)
 
 
-@suite_run_blueprint.route("/suite_runs/")
+@suite_run_blueprint.route("/")
 def get_suite_runs():
     runs = suite_run.SuiteRun.query.all()
     return jsonify(data=runs)
 
 
-@suite_run_blueprint.route("/suite_runs/", methods=["POST"])
+@suite_run_blueprint.route("/", methods=["POST"])
 def create_suite_run():
-    data = request.get_json(Force=True)
-    suite = test_suite.TestSuite.query(data["test_suite_id"])
-    return
+    data = request.get_json(force=True)
+    suite = test_suite.TestSuite.query.get(data["test_suite_id"])
+    run = suite_run.create_from_test_suite(suite)
+    db.session.add(run)
+    db.session.commit() 
+    return jsonify(data=run)

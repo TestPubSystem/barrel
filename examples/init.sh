@@ -19,3 +19,4 @@ curl "$BASE_URL/testsuites/1/tags/Regress" -X POST
 curl "$BASE_URL/testsuites/1/tests/1" -X POST
 curl "$BASE_URL/testsuites/1/tests/2" -X POST
 
+curl "$BASE_URL/suiteruns/" -d @post_suite_run.json

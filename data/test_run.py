@@ -23,7 +23,7 @@ class TestRun(db.Model):
             "id": self.id,
             "status": self.status,
             "test_revision_id": self.test_revision_id,
-            "step_statuses": self.step_statuses,
+            "step_results": self.step_results,
             "suite_run_id": self.suite_run_id,
             "comment": self.comment,
             "finish_date": self.finish_date,
@@ -36,5 +36,5 @@ def create_from_test(test):
     for step in test.last_revision.steps:
         res = StepResult()
         res.step = step
-        run.step_statuses.appen(res)
+        run.step_results.append(res)
     return run
