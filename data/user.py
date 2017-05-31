@@ -9,7 +9,7 @@ import enum
 class Role(enum.Enum):
     manager = "manager"
     tester = "tester"
-    test_designer = "tets_designer"
+    test_designer = "test_designer"
 
 
 class UserAuth:

@@ -24,6 +24,7 @@ def get_test_suite(test_suite_id):
         return jsonify(error="No testsuite found"), 404
     return jsonify(data=res)
 
+
 @test_suite_blueprint.route("/<int:test_suite_id>", methods=["DELETE"])
 def delete_test_suite(test_suite_id):
     res = test_suite.TestSuite.query.get(test_suite_id)
@@ -49,7 +50,8 @@ def update_test_suite(test_suite_id):
 @test_suite_blueprint.route("/", methods=["POST"])
 def create_test_suite():
     data = request.get_json(force=True)
-    res = test_suite.TestSuite.from_map(data)
+    res = test_suite.TestSuite()
+    res.update_from_map(data)
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)
@@ -71,7 +73,6 @@ def add_test_suite_test(test_suite_id, test_id):
 @test_suite_blueprint.route("/<int:test_suite_id>/tests/<int:test_id>", methods=["DELETE"])
 def delete_test_suite_test(test_suite_id, test_id):
     res = test_suite.TestSuite.query.get(test_suite_id)
-    t = test.Test.query.get(test_id)
     if not res:
         return jsonify(error="No testsuite found"), 404
     t = test.Test.query.get(test_id)
@@ -80,8 +81,6 @@ def delete_test_suite_test(test_suite_id, test_id):
     res.tests.remove(t)
     db.session.commit()
     return jsonify(data=res)
-
-
 
 
 @test_suite_blueprint.route("/<int:test_suite_id>/tags/<tag_name>", methods=["POST"])
@@ -95,6 +94,7 @@ def add_tag(test_suite_id, tag_name):
     t.tags.append(tg)
     db.session.commit()
     return jsonify(data=t)
+
 
 @test_suite_blueprint.route("/<int:test_suite_id>/tags/<tag_name>", methods=["DELETE"])
 def delete_tag(test_suite_id, tag_name):

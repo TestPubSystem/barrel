@@ -20,7 +20,8 @@ def get_tags(offset=0, limit=20):
 @tag_blueprint.route("/", methods=["POST"])
 def create_tag():
     data = request.get_json(force=True)
-    res = tag.Tag.from_map(data)
+    res = tag.Tag()
+    res.update_from_map(data)
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)
