@@ -1,5 +1,4 @@
 {
-  "last_revision": {
     "desc": "It is Test Descrition...",
     "post_condition": "Post condition Edited",
     "pre_condition": "Pre condition Edited",
@@ -14,7 +13,5 @@
         "text": "Step 1",
         "type": "expected_result"
       }
-    ],
-    "title": "Test Title Edited"
-  }
+    ]
 }

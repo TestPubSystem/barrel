@@ -10,7 +10,7 @@ curl "$BASE_URL/tags/" -d @post_tag3.json
 curl "$BASE_URL/tests/" -d @post_test.json
 curl "$BASE_URL/tests/1/tags/Regress" -X POST
 curl "$BASE_URL/tests/" -d @post_test.json
-curl "$BASE_URL/tests/2/revisions/" -d @post_test2.json
+curl "$BASE_URL/tests/2/revisions/" -d @post_test2_revision.json
 curl "$BASE_URL/tests/2/tags/Regress" -X POST
 curl "$BASE_URL/tests/2/tags/Smoke" -X POST
 
