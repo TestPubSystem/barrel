@@ -20,3 +20,6 @@ curl "$BASE_URL/testsuites/1/tests/1" -X POST
 curl "$BASE_URL/testsuites/1/tests/2" -X POST
 
 curl "$BASE_URL/suiteruns/" -d @post_suite_run.json
+curl "$BASE_URL/stepresults/1" -d @put_step_result.json -X PUT
+curl "$BASE_URL/testruns/1" -d @patch_test_run.json -X PATCH
+#curl "$BASE_URL/testruns/" -d @post_test_run.json

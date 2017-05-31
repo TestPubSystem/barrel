@@ -46,5 +46,4 @@ class StepResult(db.Model):
         self.status = data.get("status", self.status)
         if self.status != old_status:
             self.completion_date = datetime.datetime.now()
-        self.step_id = data.get("step_id", self.step_id)
         self.comment = data.get("comment", self.comment)

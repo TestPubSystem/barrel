@@ -10,7 +10,7 @@ step_result_blueprint = Blueprint("step_result", __name__)
 
 
 @step_result_blueprint.route("/<int:result_id>", methods=["PUT"])
-def get_suite_run(result_id):
+def update_step_result(result_id):
     res = result.StepResult.query.get(result_id)
     if not res:
         return "Step result not found", 404
