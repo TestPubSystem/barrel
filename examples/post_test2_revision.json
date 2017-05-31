@@ -1,5 +1,4 @@
 {
-  "last_revision": {
     "desc": "It is Test Descrition...",
     "post_condition": "Post condition Edited",
     "pre_condition": "Pre condition Edited",
@@ -16,5 +15,4 @@
       }
     ],
     "title": "Test Title Edited"
-  }
 }
