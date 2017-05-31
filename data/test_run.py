@@ -4,6 +4,8 @@ from data import db
 from data.result import Status, StepResult
 from data.test import TestRevision, Test
 
+import datetime
+
 
 class TestRun(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -28,6 +30,13 @@ class TestRun(db.Model):
             "comment": self.comment,
             "finish_date": self.finish_date,
         }
+
+    def update_from_map(self, data):
+        self.comment = data.get("comment", self.comment)
+        self.status = data.get("status", self.status)
+        if self.status:
+            self.finish_date = datetime.datetime.now()
+        self.suite_run_id = data.get("suite_run_id", self.suite_run_id)
 
 
 def create_from_test_revision(revision: TestRevision):

@@ -20,6 +20,18 @@ def get_test_runs():
 @test_run_blueprint.route("/<int:run_id>")
 def get_suite_run(run_id):
     runs = test_run.TestRun.query.get(run_id)
+    if not runs:
+        return "Test run not found", 404
+    return jsonify(data=runs)
+
+
+@test_run_blueprint.route("/<int:run_id>", methods=["PATCH"])
+def patch_suite_run(run_id):
+    runs = test_run.TestRun.query.get(run_id)  # type: test_run.TestRun
+    if not runs:
+        return "Test run not found", 404
+    data = request.get_json(force=True)
+    runs.update_from_map(data)
     return jsonify(data=runs)
 
 
