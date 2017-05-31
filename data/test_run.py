@@ -33,8 +33,9 @@ class TestRun(db.Model):
 
     def update_from_map(self, data):
         self.comment = data.get("comment", self.comment)
+        old_status = self.status
         self.status = data.get("status", self.status)
-        if self.status:
+        if self.status != old_status:
             self.finish_date = datetime.datetime.now()
         self.suite_run_id = data.get("suite_run_id", self.suite_run_id)
 

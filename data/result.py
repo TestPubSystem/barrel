@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import enum
+import datetime
 
 from data.test import TestRevision, Step
 from data.test_suite import TestSuite
@@ -41,7 +42,9 @@ class StepResult(db.Model):
         }
 
     def update_from_map(self, data):
+        old_status = self.status
         self.status = data.get("status", self.status)
+        if self.status != old_status:
+            self.completion_date = datetime.datetime.now()
         self.step_id = data.get("step_id", self.step_id)
-        self.completion_date = data.get("completion_date", self.completion_date)
         self.comment = data.get("comment", self.comment)
