@@ -45,6 +45,13 @@ class Step(db.Model):
         self.order_number = x.get("order_number", self.order_number)
 
 
+@enum.unique
+class TestState(enum.Enum):
+    deptecated = "deprecated"
+    new = "new"
+    approved = "approved"
+
+
 class TestRevision(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(140), unique=False)
@@ -53,14 +60,12 @@ class TestRevision(db.Model):
     post_condition = db.Column(db.String(140), unique=False)  # type: str
     test_id = db.Column(db.Integer, db.ForeignKey('test.id'))
     creation_date = db.Column(db.DateTime, default=db.func.now())
+    state = db.Column(db.Enum(TestState), default=TestState.new)
 
     steps = db.relationship(
         'Step',
         cascade="all"
     )
-
-    def __init__(self):
-        self.steps = []
 
     # parameters = None  # type: list[str]
     # author_id = None
@@ -76,6 +81,7 @@ class TestRevision(db.Model):
             "post_condition": self.post_condition,
             "creation_date": self.creation_date,
             "steps": self.steps,
+            "state": self.state,
         }
 
     def update_from_map(self, x):
@@ -84,6 +90,7 @@ class TestRevision(db.Model):
         self.desc = x.get("desc", self.desc)
         self.pre_condition = x.get("pre_condition", self.pre_condition)
         self.post_condition = x.get("post_condition", self.post_condition)
+        self.state = x.get("state", self.state)
         steps = x.get("steps", [])
         if steps is None:
             self.steps.clear()
