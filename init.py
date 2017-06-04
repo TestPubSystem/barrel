@@ -13,6 +13,8 @@ def deploy(app):
         u = User()
         u.name = "Root User"
         u.login = "root"
+        u.confirmed = True
+        u.blocked = False
         u.user_auth = UserAuth()
         u.user_auth.password_hash = generate_password_hash("password")
 
