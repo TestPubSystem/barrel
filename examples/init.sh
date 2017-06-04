@@ -1,7 +1,11 @@
 #!/bin/bash
+set -x
 
 HOST="http://127.0.0.1:5000"
+#HOST="http://tishka17.pythonanywhere.com"
 BASE_URL="$HOST/api/v1"
+
+curl "$BASE_URL/auth" -H "Content-Type: application/json" -d @auth.json
 
 curl "$BASE_URL/tags/" -d @post_tag.json
 curl "$BASE_URL/tags/" -d @post_tag2.json
