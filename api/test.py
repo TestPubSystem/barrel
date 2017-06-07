@@ -3,6 +3,7 @@
 from flask import Blueprint
 from flask import request
 from flask import jsonify
+from flask_jwt import jwt_required, current_identity
 
 from data import test
 from data import db
@@ -12,12 +13,14 @@ test_blueprint = Blueprint("tests", __name__)
 
 
 @test_blueprint.route("/")
+@jwt_required()
 def get_tests(offset=0, limit=20):
     res = test.Test.query.offset(offset).limit(limit).all()
     return jsonify(data=res)
 
 
 @test_blueprint.route("/<int:test_id>")
+@jwt_required()
 def get_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -26,6 +29,7 @@ def get_test(test_id):
 
 
 @test_blueprint.route("/<int:test_id>/revisions/")
+@jwt_required()
 def get_test_revisions(test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -34,6 +38,7 @@ def get_test_revisions(test_id):
 
 
 @test_blueprint.route("/<int:test_id>/revisions/<int:revision_id>", methods=["GET"])
+@jwt_required()
 def get_test_revision_by_test(revision_id, test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -45,6 +50,7 @@ def get_test_revision_by_test(revision_id, test_id):
 
 
 @test_blueprint.route("/<int:test_id>/revisions/", methods=["POST"])
+@jwt_required()
 def update_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -52,6 +58,7 @@ def update_test(test_id):
     data = request.get_json(force=True)
     rev = test.TestRevision()
     rev.update_from_map(data)
+    rev.author = current_identity
     rev.test = t
     db.session.add(rev)
     db.session.commit()
@@ -59,6 +66,7 @@ def update_test(test_id):
 
 
 @test_blueprint.route("/<int:test_id>", methods=["DELETE"])
+@jwt_required()
 def delete_test(test_id):
     t = test.Test.query.get(test_id)
     if not t:
@@ -69,12 +77,14 @@ def delete_test(test_id):
 
 
 @test_blueprint.route("/", methods=["POST"])
+@jwt_required()
 def create_test():
     data = request.get_json(force=True)
     rev = test.TestRevision()
     rev.update_from_map(data["last_revision"])
     t = test.Test()
     rev.test = t
+    rev.author = current_identity
     db.session.add(rev)
     db.session.add(t)
     db.session.commit()
@@ -82,6 +92,7 @@ def create_test():
 
 
 @test_blueprint.route("/<int:test_id>/tags/<tag_name>", methods=["POST"])
+@jwt_required()
 def add_tag(test_id, tag_name):
     t = test.Test.query.get(test_id)
     if not t:
@@ -95,6 +106,7 @@ def add_tag(test_id, tag_name):
 
 
 @test_blueprint.route("/<int:test_id>/tags/<tag_name>", methods=["DELETE"])
+@jwt_required()
 def delete_tag(test_id, tag_name):
     t = test.Test.query.get(test_id)
     if not t:

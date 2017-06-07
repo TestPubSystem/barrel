@@ -4,6 +4,7 @@
 import enum
 from data import db
 from data.tag import Tag
+from data.user import User
 from werkzeug.utils import cached_property
 
 test_tags = db.Table(
@@ -68,8 +69,8 @@ class TestRevision(db.Model):
     )
 
     # parameters = None  # type: list[str]
-    # author_id = None
-    # creation_date = None  # type: datetime.datetime
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", backref="tests")  # type: User
 
     def to_map(self):
         return {
@@ -82,6 +83,7 @@ class TestRevision(db.Model):
             "creation_date": self.creation_date,
             "steps": self.steps,
             "state": self.state,
+            "author": self.author,
         }
 
     def update_from_map(self, x):
@@ -120,10 +122,7 @@ class Test(db.Model):
         secondary=test_tags,
         cascade="all",
         backref=db.backref('tests', lazy='dynamic'),
-    )
-
-    # tags = None  # type: list[str]
-    # author_id = None
+    )  # type: list[Tag]
 
     def to_map(self):
         return {
