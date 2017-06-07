@@ -20,10 +20,10 @@ class TestRun(db.Model):
 
     # attachments = None
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    author = db.relationship("User", backref="suite_runs", foreign_keys=[author_id])  # type: User
+    author = db.relationship("User", backref="test_runs", foreign_keys=[author_id])  # type: User
 
     assignee_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    assignee = db.relationship("User", backref="assigned_suite_runs", foreign_keys=[assignee_id])  # type: User
+    assignee = db.relationship("User", backref="assigned_test_runs", foreign_keys=[assignee_id])  # type: User
 
     def to_map(self):
         return {
