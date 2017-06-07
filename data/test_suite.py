@@ -3,6 +3,7 @@
 from data import db
 from data.test import Test
 from data.tag import Tag
+from data.user import User
 
 test_suite_tags = db.Table(
     "test_suite_tags",
@@ -27,13 +28,15 @@ class TestSuite(db.Model):
         secondary=test_suite_tests,
         backref=db.backref('test_suites', lazy='dynamic'),
         cascade="all"
-    )
+    )  # type: list[Test]
     tags = db.relationship(
         'Tag',
         secondary=test_suite_tags,
         backref=db.backref('test_suites', lazy='dynamic'),
         cascade="all"
-    )
+    )  # type: list[Tag]
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", backref="test_suites")  # type: User
 
     def to_map(self):
         return {
@@ -43,10 +46,9 @@ class TestSuite(db.Model):
             "tests": self.tests,
             "tags": self.tags,
             "desc": self.desc,
+            "author": self.author,
         }
 
     def update_from_map(self, x):
         self.title = x.get("title", self.title)
         self.desc = x.get("desc", self.desc)
-
-        # author_id = None
