@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import datetime
 import enum
 import random
 import string
+
+from data import db
 
 from data import db
 
@@ -17,23 +18,32 @@ class Role(enum.Enum):
     admin = "admin"
 
 
-def gen_salt():
-    return "".join(random.choice(string.ascii_letters) for i in range(63))
-
-
 class UserAuth(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
-    salt = db.Column(db.String(64), nullable=False, default=gen_salt)
-    password_sha256 = db.Column(db.String(64), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True, autoincrement=False)
+    password_hash = db.Column(db.String(128), nullable=True)
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    roles = db.Column(db.Enum(Role))
-    login = db.Column(db.String(128), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # roles = db.Column(db.Enum(Role))
+    login = db.Column(db.String(128), nullable=False, unique=True)
     name = db.Column(db.String(128), nullable=False)
-    email = db.Column(db.String(128), nullable=False)
+    email = db.Column(db.String(128), nullable=True)
     # avatar =
     registration_date = db.Column(db.DateTime, default=db.func.now())
     blocked = db.Column(db.Boolean, default=False)
     confirmed = db.Column(db.Boolean, default=False)
+    user_auth = db.relationship(
+        UserAuth,
+        cascade="all",
+        uselist=False,
+    )
+
+    def to_map(self):
+        return {
+            "login": self.login,
+            "name": self.name,
+            "confirmed": self.confirmed,
+            "blocked": self.blocked,
+            "registration_date": self.registration_date
+        }

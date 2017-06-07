@@ -11,7 +11,7 @@ class SuiteRun(db.Model):
     test_suite_id = db.Column(db.Integer, db.ForeignKey('test_suite.id'))
     start_date = db.Column(db.DateTime, default=db.func.now())
     finish_date = db.Column(db.DateTime)
-    test_results = db.relationship("TestRun", cascade="all")
+    test_runs = db.relationship("TestRun", cascade="all")
 
     # author_id = None
 
@@ -21,7 +21,7 @@ class SuiteRun(db.Model):
             "test_suite_id": self.test_suite_id,
             "start_date": self.start_date,
             "finish_date": self.finish_date,
-            "test_results": self.test_results,
+            "test_runs": self.test_runs,
         }
 
 
@@ -30,5 +30,5 @@ def create_from_test_suite(test_suite: TestSuite):
     run.test_suite_id = test_suite.id
     for test in test_suite.tests:
         res = data.test_run.create_from_test(test)
-        run.test_results.append(res)
+        run.test_runs.append(res)
     return run
