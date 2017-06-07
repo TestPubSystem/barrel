@@ -15,7 +15,7 @@ from api.user import user_blueprint
 from db_json_encoder import CustomJSONEncoder
 
 from flask_cors import CORS
-from flask_jwt import JWT, jwt_required, current_identity
+from auth import jwt
 
 import auth
 import init
@@ -30,13 +30,13 @@ app.config["JWT_AUTH_URL_RULE"] = "/api/v1/auth"
 app.config['SECRET_KEY'] = 'super-secret'  # FIXME generate on first start
 app.json_encoder = CustomJSONEncoder
 
-jwt = JWT(app, auth.authenticate, auth.identity)
-
 db.init_app(app)
 db.app = app
 
-init.deploy(app)
+jwt.init_app(app)
+jwt.app = app
 
+init.deploy(app)
 
 if DEBUG:
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -48,14 +48,6 @@ app.register_blueprint(suite_run_blueprint, url_prefix="/api/v1/suiteruns")
 app.register_blueprint(test_run_blueprint, url_prefix="/api/v1/testruns")
 app.register_blueprint(step_result_blueprint, url_prefix="/api/v1/stepresults")
 app.register_blueprint(user_blueprint, url_prefix="/api/v1/users")
-
-
-# FIXME remove
-@app.route("/1")
-@jwt_required()
-def xxx():
-    return '%s' % current_identity.login
-
 
 if __name__ == "__main__":
     app.run()
