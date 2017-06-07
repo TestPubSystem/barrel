@@ -54,10 +54,10 @@ requests.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test2_id))
 resp = requests.post(BASE_URL + "/suiteruns/", data=files["post_suite_run"])
 suiterun = json.loads(resp.content.decode())["data"]
 requests.put(
-    BASE_URL + "/stepresults/%s" % suiterun["test_results"][0]["step_results"][0]["id"],
+    BASE_URL + "/stepresults/%s" % suiterun["test_runs"][0]["step_results"][0]["id"],
     data=files["post_suite_run"]
 )
 requests.patch(
-    BASE_URL + "/testruns/%s" % suiterun["test_results"][0]["id"],
+    BASE_URL + "/testruns/%s" % suiterun["test_runs"][0]["id"],
     data=files["post_suite_run"]
 )
