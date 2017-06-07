@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import enum
-import random
-import string
-
-from data import db
 
 from data import db
 
