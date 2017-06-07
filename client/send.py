@@ -33,38 +33,39 @@ session.headers["Authorization"] = "JWT " + content["access_token"]
 resp = session.get(BASE_URL + "/tags")
 tags = json.loads(resp.content.decode())["data"]
 if not tags:
-    resp = requests.post(BASE_URL + "/tags/", data=files["post_tag"], headers=headers)
-    resp = requests.post(BASE_URL + "/tags/", data=files["post_tag2"], headers=headers)
-    resp = requests.post(BASE_URL + "/tags/", data=files["post_tag3"], headers=headers)
+    resp = session.post(BASE_URL + "/tags/", data=files["post_tag"])
+    resp = session.post(BASE_URL + "/tags/", data=files["post_tag2"])
+    resp = session.post(BASE_URL + "/tags/", data=files["post_tag3"])
 
 # create tests
-resp = requests.post(BASE_URL + "/tests/", data=files["post_test"])
+resp = resp = session.post(BASE_URL + "/tests/", data=files["post_test"])
+print(resp.content)
 test1_id = json.loads(resp.content.decode())["data"]["id"]
-requests.post(BASE_URL + "/tests/%s/tags/%s" % (test1_id, "Regress"))
+session.post(BASE_URL + "/tests/%s/tags/%s" % (test1_id, "Regress"))
 
-resp = requests.post(BASE_URL + "/tests/", data=files["post_test"])
+resp = session.post(BASE_URL + "/tests/", data=files["post_test"])
 test2_id = json.loads(resp.content.decode())["data"]["id"]
-requests.post(BASE_URL + "/tests/%s/revisions/" % test2_id, data=files["post_test2_revision"])
-requests.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Regress"))
-requests.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Smoke"))
+session.post(BASE_URL + "/tests/%s/revisions/" % test2_id, data=files["post_test2_revision"])
+session.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Regress"))
+session.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Smoke"))
 
 # create test suite
-resp = requests.post(BASE_URL + "/testsuites/", data=files["post_suite"])
+resp = session.post(BASE_URL + "/testsuites/", data=files["post_suite"])
 test_suite1_id = json.loads(resp.content.decode())["data"]["id"]
-requests.post(BASE_URL + "/testsuites/%s/tags/%s" % (test_suite1_id, "Regress"))
-requests.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test1_id))
-requests.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test2_id))
+session.post(BASE_URL + "/testsuites/%s/tags/%s" % (test_suite1_id, "Regress"))
+session.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test1_id))
+session.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test2_id))
 
 # create suite run
-resp = requests.post(BASE_URL + "/suiteruns/", data=files["post_suite_run"])
+resp = session.post(BASE_URL + "/suiteruns/", data=files["post_suite_run"])
 suiterun = json.loads(resp.content.decode())["data"]
 
 # update runs
-requests.put(
+session.put(
     BASE_URL + "/stepresults/%s" % suiterun["test_runs"][0]["step_results"][0]["id"],
     data=files["post_suite_run"]
 )
-requests.patch(
+session.patch(
     BASE_URL + "/testruns/%s" % suiterun["test_runs"][0]["id"],
     data=files["post_suite_run"]
 )
