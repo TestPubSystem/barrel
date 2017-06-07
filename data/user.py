@@ -37,6 +37,7 @@ class User(db.Model):
 
     def to_map(self):
         return {
+            "id": self.id,
             "login": self.login,
             "name": self.name,
             "confirmed": self.confirmed,
