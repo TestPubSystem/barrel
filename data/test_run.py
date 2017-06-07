@@ -44,6 +44,9 @@ class TestRun(db.Model):
         self.status = data.get("status", self.status)
         if self.status != old_status:
             self.finish_date = datetime.datetime.now()
+        if "assignee" in data:
+            assignee_id = data["assignee"].get("id")
+            self.assignee = User.query.get(assignee_id) if assignee_id else None
         self.suite_run_id = data.get("suite_run_id", self.suite_run_id)
 
 
@@ -59,5 +62,5 @@ def create_from_test_revision(revision: TestRevision, author: User, assignee: Us
     return run
 
 
-def create_from_test(test: Test):
-    return create_from_test_revision(test.last_revision)
+def create_from_test(test: Test, author: User, assignee: User):
+    return create_from_test_revision(test.last_revision, author, assignee)
