@@ -3,6 +3,7 @@
 from data import db
 from data.result import Status, StepResult
 from data.test import TestRevision, Test
+from data.user import User
 
 import datetime
 
@@ -18,7 +19,11 @@ class TestRun(db.Model):
     finish_date = db.Column(db.DateTime)
 
     # attachments = None
-    # author_id = None
+    author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    author = db.relationship("User", backref="suite_runs", foreign_keys=[author_id])  # type: User
+
+    responsible_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    responsible = db.relationship("User", backref="responsible_suite_runs", foreign_keys=[responsible_id])  # type: User
 
     def to_map(self):
         return {
@@ -29,6 +34,8 @@ class TestRun(db.Model):
             "suite_run_id": self.suite_run_id,
             "comment": self.comment,
             "finish_date": self.finish_date,
+            "author": self.author,
+            "responsible": self.responsible,
         }
 
     def update_from_map(self, data):
@@ -40,9 +47,11 @@ class TestRun(db.Model):
         self.suite_run_id = data.get("suite_run_id", self.suite_run_id)
 
 
-def create_from_test_revision(revision: TestRevision):
+def create_from_test_revision(revision: TestRevision, author: User, responsible: User):
     run = TestRun()
     run.test_revision = revision
+    run.author = author
+    run.responsible = responsible
     for step in revision.steps:
         res = StepResult()
         res.step = step

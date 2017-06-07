@@ -29,7 +29,7 @@ class SuiteRun(db.Model):
             "finish_date": self.finish_date,
             "test_runs": self.test_runs,
             "author": self.author,
-            "responsible": self.responsible
+            "responsible": self.responsible,
         }
 
 
@@ -39,6 +39,6 @@ def create_from_test_suite(test_suite: TestSuite, author: User, responsible: Use
     run.responsible = responsible
     run.test_suite_id = test_suite.id
     for test in test_suite.tests:
-        res = data.test_run.create_from_test(test)
+        res = data.test_run.create_from_test(test, author, responsible)
         run.test_runs.append(res)
     return run
