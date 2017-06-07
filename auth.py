@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from werkzeug import security
-from data import db
-from data.user import User, UserAuth
+from data.user import User
 
 
 def authenticate(login, password):
