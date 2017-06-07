@@ -24,10 +24,12 @@ access_token = None
 session = requests.session()
 session.headers["Content-Type"] = "application/json"
 
+# authenticate
 resp = session.post(BASE_URL + "/auth", data=files["auth"])
 content = json.loads(resp.content.decode())
 session.headers["Authorization"] = "JWT " + content["access_token"]
 
+# create tags
 resp = session.get(BASE_URL + "/tags")
 tags = json.loads(resp.content.decode())["data"]
 if not tags:
@@ -35,6 +37,7 @@ if not tags:
     resp = requests.post(BASE_URL + "/tags/", data=files["post_tag2"], headers=headers)
     resp = requests.post(BASE_URL + "/tags/", data=files["post_tag3"], headers=headers)
 
+# create tests
 resp = requests.post(BASE_URL + "/tests/", data=files["post_test"])
 test1_id = json.loads(resp.content.decode())["data"]["id"]
 requests.post(BASE_URL + "/tests/%s/tags/%s" % (test1_id, "Regress"))
@@ -45,14 +48,18 @@ requests.post(BASE_URL + "/tests/%s/revisions/" % test2_id, data=files["post_tes
 requests.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Regress"))
 requests.post(BASE_URL + "/tests/%s/tags/%s" % (test2_id, "Smoke"))
 
+# create test suite
 resp = requests.post(BASE_URL + "/testsuites/", data=files["post_suite"])
 test_suite1_id = json.loads(resp.content.decode())["data"]["id"]
 requests.post(BASE_URL + "/testsuites/%s/tags/%s" % (test_suite1_id, "Regress"))
 requests.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test1_id))
 requests.post(BASE_URL + "/testsuites/%s/tests/%s" % (test_suite1_id, test2_id))
 
+# create suite run
 resp = requests.post(BASE_URL + "/suiteruns/", data=files["post_suite_run"])
 suiterun = json.loads(resp.content.decode())["data"]
+
+# update runs
 requests.put(
     BASE_URL + "/stepresults/%s" % suiterun["test_runs"][0]["step_results"][0]["id"],
     data=files["post_suite_run"]
