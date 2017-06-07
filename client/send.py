@@ -39,7 +39,6 @@ if not tags:
 
 # create tests
 resp = resp = session.post(BASE_URL + "/tests/", data=files["post_test"])
-print(resp.content)
 test1_id = json.loads(resp.content.decode())["data"]["id"]
 session.post(BASE_URL + "/tests/%s/tags/%s" % (test1_id, "Regress"))
 
