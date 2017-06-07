@@ -24,6 +24,8 @@ def get_suite_runs():
 @jwt_required()
 def get_suite_run(run_id):
     runs = suite_run.SuiteRun.query.get(run_id)
+    if not runs:
+        return "Suite run not found", 404
     return jsonify(data=runs)
 
 
@@ -36,5 +38,20 @@ def create_suite_run():
     responsible = User.query.get(responsible_id) if responsible_id else None
     run = suite_run.create_from_test_suite(suite, current_identity, responsible)
     db.session.add(run)
+    db.session.commit()
+    return jsonify(data=run)
+
+
+@suite_run_blueprint.route("/<int:run_id>", methods=["PATCH"])
+@jwt_required()
+def update_suite_run(run_id):
+    run = suite_run.SuiteRun.query.get(run_id)  # type: suite_run.SuiteRun
+    if not run:
+        return "Suite run not found", 404
+    data = request.get_json(force=True)
+    if "responsible" in data:
+        responsible_id = data["responsible"].get("id")
+        responsible = User.query.get(responsible_id) if responsible_id else None
+        run.responsible = responsible
     db.session.commit()
     return jsonify(data=run)
