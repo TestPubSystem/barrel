@@ -1,6 +1,6 @@
 {
     "test_suite_id": 1,
-    "responsible": {
+    "assignee": {
         "id": 1
     }
 }

@@ -18,8 +18,8 @@ class SuiteRun(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="suite_runs", foreign_keys=[author_id])  # type: User
 
-    responsible_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    responsible = db.relationship("User", backref="responsible_suite_runs", foreign_keys=[responsible_id])  # type: User
+    assignee_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    assignee = db.relationship("User", backref="assigned_suite_runs", foreign_keys=[assignee_id])  # type: User
 
     def to_map(self):
         return {
@@ -29,16 +29,16 @@ class SuiteRun(db.Model):
             "finish_date": self.finish_date,
             "test_runs": self.test_runs,
             "author": self.author,
-            "responsible": self.responsible,
+            "assignee": self.assignee,
         }
 
 
-def create_from_test_suite(test_suite: TestSuite, author: User, responsible: User):
+def create_from_test_suite(test_suite: TestSuite, author: User, assignee: User):
     run = SuiteRun()
     run.author = author
-    run.responsible = responsible
+    run.assignee = assignee
     run.test_suite_id = test_suite.id
     for test in test_suite.tests:
-        res = data.test_run.create_from_test(test, author, responsible)
+        res = data.test_run.create_from_test(test, author, assignee)
         run.test_runs.append(res)
     return run

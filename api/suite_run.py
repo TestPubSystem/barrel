@@ -34,9 +34,9 @@ def get_suite_run(run_id):
 def create_suite_run():
     data = request.get_json(force=True)
     suite = TestSuite.query.get(data["test_suite_id"])
-    responsible_id = data.get("responsible", {}).get("id")
-    responsible = User.query.get(responsible_id) if responsible_id else None
-    run = suite_run.create_from_test_suite(suite, current_identity, responsible)
+    assignee_id = data.get("assignee", {}).get("id")
+    assignee = User.query.get(assignee_id) if assignee_id else None
+    run = suite_run.create_from_test_suite(suite, current_identity, assignee)
     db.session.add(run)
     db.session.commit()
     return jsonify(data=run)
@@ -49,9 +49,9 @@ def update_suite_run(run_id):
     if not run:
         return "Suite run not found", 404
     data = request.get_json(force=True)
-    if "responsible" in data:
-        responsible_id = data["responsible"].get("id")
-        responsible = User.query.get(responsible_id) if responsible_id else None
-        run.responsible = responsible
+    if "assignee" in data:
+        assignee_id = data["assignee"].get("id")
+        assignee = User.query.get(assignee_id) if assignee_id else None
+        run.assignee = assignee
     db.session.commit()
     return jsonify(data=run)

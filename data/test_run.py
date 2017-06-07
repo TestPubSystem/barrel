@@ -22,8 +22,8 @@ class TestRun(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="suite_runs", foreign_keys=[author_id])  # type: User
 
-    responsible_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    responsible = db.relationship("User", backref="responsible_suite_runs", foreign_keys=[responsible_id])  # type: User
+    assignee_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    assignee = db.relationship("User", backref="assigned_suite_runs", foreign_keys=[assignee_id])  # type: User
 
     def to_map(self):
         return {
@@ -35,7 +35,7 @@ class TestRun(db.Model):
             "comment": self.comment,
             "finish_date": self.finish_date,
             "author": self.author,
-            "responsible": self.responsible,
+            "assignee": self.assignee,
         }
 
     def update_from_map(self, data):
@@ -47,11 +47,11 @@ class TestRun(db.Model):
         self.suite_run_id = data.get("suite_run_id", self.suite_run_id)
 
 
-def create_from_test_revision(revision: TestRevision, author: User, responsible: User):
+def create_from_test_revision(revision: TestRevision, author: User, assignee: User):
     run = TestRun()
     run.test_revision = revision
     run.author = author
-    run.responsible = responsible
+    run.assignee = assignee
     for step in revision.steps:
         res = StepResult()
         res.step = step
