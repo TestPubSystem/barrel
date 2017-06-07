@@ -1,3 +1,6 @@
 {
-    "test_suite_id": 1
+    "test_suite_id": 1,
+    "responsible": {
+        "id": 1
+    }
 }
