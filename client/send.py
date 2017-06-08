@@ -37,6 +37,9 @@ if not tags:
     resp = session.post(BASE_URL + "/tags/", data=files["post_tag2"])
     resp = session.post(BASE_URL + "/tags/", data=files["post_tag3"])
 
+# create project
+resp = resp = session.post(BASE_URL + "/projects/", data=files["post_project"])
+
 # create tests
 resp = resp = session.post(BASE_URL + "/tests/", data=files["post_test"])
 test1_id = json.loads(resp.content.decode())["data"]["id"]

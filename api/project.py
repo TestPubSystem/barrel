@@ -22,7 +22,8 @@ def get_projects(offset=0, limit=20):
 @jwt_required()
 def create_project():
     res = project.Project()
-    res.update_from_map()
+    data = request.get_json(force=True)
+    res.update_from_map(data)
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)

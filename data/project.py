@@ -9,7 +9,7 @@ class Project(db.Model):
     name = db.Column(db.String(140))
     desc = db.Column(db.String(140))
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    author = db.relationship("User", backref="test_runs", foreign_keys=[author_id])  # type: User
+    author = db.relationship("User", backref="projects", foreign_keys=[author_id])  # type: User
     creation_date = db.Column(db.DateTime, default=db.func.now())
 
     def to_map(self):
