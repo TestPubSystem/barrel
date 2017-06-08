@@ -11,7 +11,7 @@ import data.test_run
 class SuiteRun(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     test_suite_id = db.Column(db.Integer, db.ForeignKey('test_suite.id'))
-    start_date = db.Column(db.DateTime, default=db.func.now())
+    creation_date = db.Column(db.DateTime, default=db.func.now())
     finish_date = db.Column(db.DateTime)
     test_runs = db.relationship("TestRun", cascade="all")  # type: list[TestRun]
 
@@ -25,7 +25,7 @@ class SuiteRun(db.Model):
         return {
             "id": self.id,
             "test_suite_id": self.test_suite_id,
-            "start_date": self.start_date,
+            "creation_date": self.creation_date,
             "finish_date": self.finish_date,
             "test_runs": self.test_runs,
             "author": self.author,

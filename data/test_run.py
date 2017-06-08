@@ -17,6 +17,7 @@ class TestRun(db.Model):
     suite_run_id = db.Column(db.Integer, db.ForeignKey("suite_run.id"), nullable=True)
     comment = db.Column(db.String(140), unique=False)
     finish_date = db.Column(db.DateTime)
+    creation_date = db.Column(db.DateTime, default=db.func.now())
 
     # attachments = None
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -36,6 +37,7 @@ class TestRun(db.Model):
             "finish_date": self.finish_date,
             "author": self.author,
             "assignee": self.assignee,
+            "creation_date": self.creation_date,
         }
 
     def update_from_map(self, data):
