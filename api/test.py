@@ -8,6 +8,7 @@ from flask_jwt import jwt_required, current_identity
 from data import test
 from data import db
 from data import tag
+from data import project
 
 test_blueprint = Blueprint("tests", __name__)
 
@@ -80,9 +81,15 @@ def delete_test(test_id):
 @jwt_required()
 def create_test():
     data = request.get_json(force=True)
+    t = test.Test()
+    project_id = data["project"]["id"]
+    prj = project.Project.query.get(project_id)  # type: project.Project
+    t.project = prj
+    if "tags" in data:
+        for tg in data["tags"]:
+            t.tags.append(tag.Tag.query.filter_by(title=tg["title"]).one_or_none())
     rev = test.TestRevision()
     rev.update_from_map(data["last_revision"])
-    t = test.Test()
     rev.test = t
     rev.author = current_identity
     db.session.add(rev)

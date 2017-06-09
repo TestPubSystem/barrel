@@ -16,5 +16,13 @@
       }
     ],
     "title": "Test Title"
-  }
+  },
+  "project": {
+    "id": 1
+  },
+  "tags": [
+    {
+      "title": "Regress"
+    }
+  ]
 }

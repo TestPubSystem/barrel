@@ -4,6 +4,7 @@
 from flask import Flask
 from data import db
 
+from api.project import project_blueprint
 from api.test import test_blueprint
 from api.test_suite import test_suite_blueprint
 from api.tag import tag_blueprint
@@ -41,6 +42,7 @@ init.deploy(app)
 if DEBUG:
     cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
+app.register_blueprint(project_blueprint, url_prefix="/api/v1/projects")
 app.register_blueprint(test_blueprint, url_prefix="/api/v1/tests")
 app.register_blueprint(test_suite_blueprint, url_prefix="/api/v1/testsuites")
 app.register_blueprint(tag_blueprint, url_prefix="/api/v1/tags")

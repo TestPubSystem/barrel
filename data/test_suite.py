@@ -7,14 +7,16 @@ from data.user import User
 
 test_suite_tags = db.Table(
     "test_suite_tags",
-    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id')),
-    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
+    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id'), nullable=False),
+    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'), nullable=False),
+    db.UniqueConstraint("test_suite_id", "tag_id", name="uix_test_suite_tags"),
 )
 
 test_suite_tests = db.Table(
     "test_suite_tests",
-    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
-    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
+    db.Column("test_id", db.Integer, db.ForeignKey('test.id'), nullable=False),
+    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'), nullable=False),
+    db.UniqueConstraint("test_id", "test_suite_id", name="uix_test_suite_tests"),
 )
 
 
@@ -37,6 +39,7 @@ class TestSuite(db.Model):
     )  # type: list[Tag]
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="test_suites")  # type: User
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     def to_map(self):
         return {
@@ -47,6 +50,7 @@ class TestSuite(db.Model):
             "tags": self.tags,
             "desc": self.desc,
             "author": self.author,
+            "project": self.project
         }
 
     def update_from_map(self, x):

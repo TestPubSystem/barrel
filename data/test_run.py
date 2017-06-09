@@ -12,11 +12,13 @@ class TestRun(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     status = db.Column(db.Enum(Status))
     test_revision_id = db.Column(db.Integer, db.ForeignKey('test_revision.id'))
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
     step_results = db.relationship("StepResult", cascade="all")
     test_revision = db.relationship("TestRevision", uselist=False)
     suite_run_id = db.Column(db.Integer, db.ForeignKey("suite_run.id"), nullable=True)
     comment = db.Column(db.String(140), unique=False)
     finish_date = db.Column(db.DateTime)
+    creation_date = db.Column(db.DateTime, default=db.func.now())
 
     # attachments = None
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
@@ -36,6 +38,8 @@ class TestRun(db.Model):
             "finish_date": self.finish_date,
             "author": self.author,
             "assignee": self.assignee,
+            "creation_date": self.creation_date,
+            "project": self.project,
         }
 
     def update_from_map(self, data):
@@ -55,6 +59,7 @@ def create_from_test_revision(revision: TestRevision, author: User, assignee: Us
     run.test_revision = revision
     run.author = author
     run.assignee = assignee
+    run.project_id = revision.test.project_id
     for step in revision.steps:
         res = StepResult()
         res.step = step
