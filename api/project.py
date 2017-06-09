@@ -62,6 +62,7 @@ def delete_project(project_id):
     return jsonify()
 
 
+# other data
 @project_blueprint.route("/<int:project_id>/tests/", methods=["GET"])
 @jwt_required()
 def get_project_tests(project_id):
@@ -78,3 +79,21 @@ def get_project_suites(project_id):
     if not proj:
         return "Project not found", 404
     return jsonify(data=proj.test_suites)
+
+
+@project_blueprint.route("/<int:project_id>/testruns/", methods=["GET"])
+@jwt_required()
+def get_project_test_runs(project_id):
+    proj = project.Project.query.get(project_id)  # type: project.Project
+    if not proj:
+        return "Project not found", 404
+    return jsonify(data=proj.test_runs)
+
+
+@project_blueprint.route("/<int:project_id>/suiteruns/", methods=["GET"])
+@jwt_required()
+def get_project_suite_runs(project_id):
+    proj = project.Project.query.get(project_id)  # type: project.Project
+    if not proj:
+        return "Project not found", 404
+    return jsonify(data=proj.suite_runs)

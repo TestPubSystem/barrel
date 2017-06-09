@@ -15,6 +15,8 @@ class Project(db.Model):
     creation_date = db.Column(db.DateTime, default=db.func.now())
     tests = db.relationship("Test", backref="project", cascade="all", lazy="dynamic")  # type: Test
     test_suites = db.relationship("TestSuite", backref="project", cascade="all", lazy="dynamic")  # type: TestSuite
+    test_runs = db.relationship("TestRun", backref="project", cascade="all", lazy="dynamic")  # type: TestRun
+    suite_runs = db.relationship("SuiteRun", backref="project", cascade="all", lazy="dynamic")  # type: SuiteRun
 
     def to_map(self):
         return {
