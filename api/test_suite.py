@@ -6,7 +6,10 @@ from flask import request
 from flask import jsonify
 from flask_jwt import jwt_required, current_identity
 
-from data import test, test_suite, tag
+from data import test
+from data import test_suite
+from data import tag
+from data import project
 from data import db
 
 test_suite_blueprint = Blueprint("testsuites", __name__)
@@ -57,6 +60,12 @@ def update_test_suite(test_suite_id):
 def create_test_suite():
     data = request.get_json(force=True)
     res = test_suite.TestSuite()
+    project_id = data["project"]["id"]
+    prj = project.Project.query.get(project_id)  # type: project.Project
+    res.project = prj
+    if "tags" in data:
+        for tg in data["tags"]:
+            res.tags.append(tag.Tag.query.filter_by(title=tg["title"]).one_or_none())
     res.update_from_map(data)
     res.author = current_identity
     db.session.add(res)
