@@ -37,6 +37,7 @@ class TestSuite(db.Model):
     )  # type: list[Tag]
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="test_suites")  # type: User
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     def to_map(self):
         return {
@@ -47,6 +48,7 @@ class TestSuite(db.Model):
             "tags": self.tags,
             "desc": self.desc,
             "author": self.author,
+            "project": self.project
         }
 
     def update_from_map(self, x):

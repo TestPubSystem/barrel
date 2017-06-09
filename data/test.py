@@ -106,6 +106,7 @@ class TestRevision(db.Model):
 class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     creation_date = db.Column(db.DateTime, default=db.func.now())
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     @cached_property
     def last_revision(self):
@@ -130,4 +131,5 @@ class Test(db.Model):
             "creation_date": self.creation_date,
             "last_revision": self.last_revision,
             "tags": self.tags,
+            "project": self.project,
         }

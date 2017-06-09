@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from data import db
+from data.test_suite import TestSuite
+from data.test import Test
 
 
 class Project(db.Model):
@@ -11,6 +13,8 @@ class Project(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     author = db.relationship("User", backref="projects", foreign_keys=[author_id])  # type: User
     creation_date = db.Column(db.DateTime, default=db.func.now())
+    tests = db.relationship("Test", backref="project", cascade="all", lazy="dynamic")  # type: Test
+    test_suites = db.relationship("TestSuite", backref="project", cascade="all", lazy="dynamic")  # type: TestSuite
 
     def to_map(self):
         return {
