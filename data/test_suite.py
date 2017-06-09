@@ -7,14 +7,16 @@ from data.user import User
 
 test_suite_tags = db.Table(
     "test_suite_tags",
-    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id')),
-    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
+    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id'), nullable=False),
+    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'), nullable=False),
+    db.UniqueConstraint("test_suite_id", "tag_id", name="uix_test_suite_tags"),
 )
 
 test_suite_tests = db.Table(
     "test_suite_tests",
-    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
-    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'))
+    db.Column("test_id", db.Integer, db.ForeignKey('test.id'), nullable=False),
+    db.Column("test_suite_id", db.Integer, db.ForeignKey('test_suite.id'), nullable=False),
+    db.UniqueConstraint("test_id", "test_suite_id", name="uix_test_suite_tests"),
 )
 
 

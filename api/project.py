@@ -49,3 +49,13 @@ def patch_project(project_id):
     proj.update_from_map(data)
     db.session.commit()
     return jsonify(data=proj)
+
+@project_blueprint.route("/<int:project_id>", methods=["DELETE"])
+@jwt_required()
+def delete_project(project_id):
+    proj = project.Project.query.get(project_id)  # type: project.Project
+    if not proj:
+        return "Project not found", 404
+    db.session.delete(proj)
+    db.session.commit()
+    return jsonify()

@@ -9,8 +9,9 @@ from werkzeug.utils import cached_property
 
 test_tags = db.Table(
     "test_tags",
-    db.Column("test_id", db.Integer, db.ForeignKey('test.id')),
-    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id'))
+    db.Column("test_id", db.Integer, db.ForeignKey('test.id'), nullable=False),
+    db.Column("tag_id", db.Integer, db.ForeignKey('tag.id'), nullable=False),
+    db.UniqueConstraint("test_id", "tag_id", name="uix_test_tags")
 )
 
 
