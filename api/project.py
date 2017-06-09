@@ -50,6 +50,7 @@ def patch_project(project_id):
     db.session.commit()
     return jsonify(data=proj)
 
+
 @project_blueprint.route("/<int:project_id>", methods=["DELETE"])
 @jwt_required()
 def delete_project(project_id):
@@ -59,3 +60,21 @@ def delete_project(project_id):
     db.session.delete(proj)
     db.session.commit()
     return jsonify()
+
+
+@project_blueprint.route("/<int:project_id>/tests/", methods=["GET"])
+@jwt_required()
+def get_project_tests(project_id):
+    proj = project.Project.query.get(project_id)  # type: project.Project
+    if not proj:
+        return "Project not found", 404
+    return jsonify(data=proj.tests)
+
+
+@project_blueprint.route("/<int:project_id>/testsuites/", methods=["GET"])
+@jwt_required()
+def get_project_suites(project_id):
+    proj = project.Project.query.get(project_id)  # type: project.Project
+    if not proj:
+        return "Project not found", 404
+    return jsonify(data=proj.test_suites)
