@@ -3,7 +3,7 @@
 from flask import Blueprint
 from flask import request
 from flask import jsonify
-from flask_jwt import jwt_required
+from flask_jwt import jwt_required, current_identity
 
 from data import project
 from data import db
@@ -24,6 +24,7 @@ def create_project():
     res = project.Project()
     data = request.get_json(force=True)
     res.update_from_map(data)
+    res.author = current_identity
     db.session.add(res)
     db.session.commit()
     return jsonify(data=res)
